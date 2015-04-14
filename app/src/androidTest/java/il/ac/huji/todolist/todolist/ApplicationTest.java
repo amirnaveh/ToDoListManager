@@ -1,4 +1,4 @@
-package todolist.huji.ac.il.todolist;
+package il.ac.huji.todolist.todolist;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
