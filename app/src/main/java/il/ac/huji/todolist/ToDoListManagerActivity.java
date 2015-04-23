@@ -14,9 +14,8 @@ import android.widget.ListView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 
 import static il.ac.huji.todolist.Constants.FIRST_COLUMN;
 import static il.ac.huji.todolist.Constants.NO_DATE_IDENTIFIER;
@@ -30,14 +29,15 @@ public class ToDoListManagerActivity extends ActionBarActivity {
     private static final String CALL_STRING = "Call ";
 
     ListView listView;
-    public ArrayList<HashMap<String, String>> list;
+    ToDoListDbHelper db;
+    public List<Task> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do_list_manager);
 
-        list = new ArrayList<>();
+        db = new ToDoListDbHelper(this);
 
         listView = (ListView) findViewById(R.id.lstTodoItems);
 
@@ -78,13 +78,12 @@ public class ToDoListManagerActivity extends ActionBarActivity {
         if (v.getId() == R.id.lstTodoItems) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-            HashMap<String, String> task = list.get(info.position);
+            Task task = list.get(info.position);
 
-            String taskText = task.get(FIRST_COLUMN);
-            menu.setHeaderTitle(taskText);
+            menu.setHeaderTitle(task.getTask());
 
             MenuInflater inflater = getMenuInflater();
-            if (taskText.startsWith(CALL_STRING)) { // Context menu with call option
+            if (task.getTask().startsWith(CALL_STRING)) { // Context menu with call option
                 inflater.inflate(R.menu.menu_context_call, menu);
             } else { // Context menu without call option
                 inflater.inflate(R.menu.menu_context, menu);
@@ -109,8 +108,8 @@ public class ToDoListManagerActivity extends ActionBarActivity {
                 return true;
 
             case R.id.menuItemCall:
-                HashMap<String, String> task = list.get(info.position);
-                String taskTxt = task.get(FIRST_COLUMN);
+                Task task = list.get(info.position);
+                String taskTxt = task.getTask();
 
                 // Parse the task to a fitting URI string for the Dial intent
                 String phoneNum = taskTxt.replaceAll("[^0-9-]", "");
@@ -131,7 +130,7 @@ public class ToDoListManagerActivity extends ActionBarActivity {
      * @param position the position of the task to be deleted
      */
     private void deleteTask(int position) {
-        list.remove(position);
+        db.removeTask(list.get(position));
         updateUI();
     }
 
@@ -150,21 +149,19 @@ public class ToDoListManagerActivity extends ActionBarActivity {
 
             if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
-                String task = extras.getString(FIRST_COLUMN);
+                String taskText = extras.getString(FIRST_COLUMN);
                 Date dueDate = new Date(extras.getLong(SECOND_COLUMN));
 
-                HashMap<String, String> temp = new HashMap<>();
-
-                temp.put(FIRST_COLUMN, task);
+                Task task;
 
                 if (dueDate.getTime() == NO_DATE_IDENTIFIER) {
-                    temp.put(SECOND_COLUMN, NO_DATE_STR);
+                    task = new Task (taskText, NO_DATE_STR);
                 } else {
                     DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                    temp.put(SECOND_COLUMN, df.format(dueDate));
+                    task = new Task (taskText, df.format(dueDate));
                 }
 
-                list.add(temp);
+                task.setId(db.addTask(task));
 
                 updateUI();
             }
@@ -175,6 +172,7 @@ public class ToDoListManagerActivity extends ActionBarActivity {
      * This method updates the UI, updating the screen.
      */
     private void updateUI() {
+        list = db.getAllTasks();
         ListViewAdapter adapter = new ListViewAdapter(this, list);
         listView.setAdapter(adapter);
     }

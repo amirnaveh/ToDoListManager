@@ -11,24 +11,21 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.List;
 
-import static il.ac.huji.todolist.Constants.FIRST_COLUMN;
 import static il.ac.huji.todolist.Constants.NO_DATE_STR;
-import static il.ac.huji.todolist.Constants.SECOND_COLUMN;
 
 public class ListViewAdapter extends BaseAdapter {
 
-    public ArrayList<HashMap<String, String>> list;
+    public List<Task> list;
     Activity activity;
-    TextView task;
-    TextView date;
+    TextView taskText;
+    TextView dateText;
 
-    public ListViewAdapter(Activity activity, ArrayList<HashMap<String, String>> list) {
+    public ListViewAdapter(Activity activity, List<Task> list) {
         super();
         this.activity = activity;
         this.list = list;
@@ -55,16 +52,16 @@ public class ListViewAdapter extends BaseAdapter {
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.column, null);
-            task = (TextView) convertView.findViewById(R.id.txtTodoTitle);
-            date = (TextView) convertView.findViewById(R.id.txtTodoDueDate);
+            taskText = (TextView) convertView.findViewById(R.id.txtTodoTitle);
+            dateText = (TextView) convertView.findViewById(R.id.txtTodoDueDate);
         }
 
         // Setting the TextView(s) text based on the map
-        HashMap<String, String> map = list.get(position);
-        task.setText(map.get(FIRST_COLUMN));
-        date.setText(map.get(SECOND_COLUMN));
+        Task task = list.get(position);
+        taskText.setText(task.getTask());
+        dateText.setText(task.getDueDate());
 
-        String dateString = map.get(SECOND_COLUMN);
+        String dateString = task.getDueDate();
 
         if (dateString.equals(NO_DATE_STR)) {
             return convertView;
@@ -81,11 +78,11 @@ public class ListViewAdapter extends BaseAdapter {
         }
 
         if (currentDate.after(dueDate)) {
-            task.setTextColor(Color.RED);
-            date.setTextColor(Color.RED);
+            taskText.setTextColor(Color.RED);
+            dateText.setTextColor(Color.RED);
         } else {
-            task.setTextColor(Color.BLACK);
-            date.setTextColor(Color.BLACK);
+            taskText.setTextColor(Color.BLACK);
+            dateText.setTextColor(Color.BLACK);
         }
 
         return convertView;
