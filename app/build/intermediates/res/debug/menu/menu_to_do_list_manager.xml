@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ToDoListManagerActivity">
+    <item android:id="@+id/menuItemAdd" android:title="@string/add"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>
+<!-- From: file:/C:/Users/Amir/AndroidStudioProjects/ToDoList/app/src/main/res/menu/menu_to_do_list_manager.xml -->
