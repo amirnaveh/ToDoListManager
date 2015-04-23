@@ -9,13 +9,13 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static il.ac.huji.todolist.Constants.NO_DATE_IDENTIFIER;
 import static il.ac.huji.todolist.Constants.NO_DATE_STR;
 
 public class ListViewAdapter extends BaseAdapter {
@@ -59,30 +59,26 @@ public class ListViewAdapter extends BaseAdapter {
         // Setting the TextView(s) text based on the map
         Task task = list.get(position);
         taskText.setText(task.getTask());
-        dateText.setText(task.getDueDate());
 
-        String dateString = task.getDueDate();
-
-        if (dateString.equals(NO_DATE_STR)) {
-            return convertView;
+        long date = task.getDueDate();
+        if (date==NO_DATE_IDENTIFIER) {
+            dateText.setText(NO_DATE_STR);
         }
+        else {
+            Date dueDate = new Date(task.getDueDate());
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            dateText.setText(df.format(dueDate));
 
-        // Comparing the current date and due date, to define the color of the task
-        Date currentDate = getDate();
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        Date dueDate = null;
-        try {
-            dueDate = df.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            // Comparing the current date and due date, to define the color of the task
+            Date currentDate = getDate();
 
-        if (currentDate.after(dueDate)) {
-            taskText.setTextColor(Color.RED);
-            dateText.setTextColor(Color.RED);
-        } else {
-            taskText.setTextColor(Color.BLACK);
-            dateText.setTextColor(Color.BLACK);
+            if (currentDate.after(dueDate)) {
+                taskText.setTextColor(Color.RED);
+                dateText.setTextColor(Color.RED);
+            } else {
+                taskText.setTextColor(Color.BLACK);
+                dateText.setTextColor(Color.BLACK);
+            }
         }
 
         return convertView;

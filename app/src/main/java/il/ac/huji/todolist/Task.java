@@ -5,15 +5,15 @@ package il.ac.huji.todolist;
  */
 public class Task {
     private String task;
-    private String dueDate;
+    private long dueDate;
     private long id;
 
     public Task() {
         this.task = null;
-        this.dueDate = Constants.NO_DATE_STR;
+        this.dueDate = Constants.NO_DATE_IDENTIFIER;
     }
 
-    public Task (String task, String dueDate) {
+    public Task (String task, long dueDate) {
         super();
         this.task = task;
         this.dueDate = dueDate;
@@ -35,11 +35,11 @@ public class Task {
         this.task = task;
     }
 
-    public String getDueDate() {
+    public long getDueDate() {
         return this.dueDate;
     }
 
-    public void setDueDate (String dueDate) {
+    public void setDueDate (long dueDate) {
         this.dueDate = dueDate;
     }
 

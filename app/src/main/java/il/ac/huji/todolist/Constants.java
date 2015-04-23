@@ -1,7 +1,7 @@
 package il.ac.huji.todolist;
 
 /**
- * Created by Amir on 14/04/2015.
+ * Constants used by the To-Do List Manager app
  */
 public class Constants {
 

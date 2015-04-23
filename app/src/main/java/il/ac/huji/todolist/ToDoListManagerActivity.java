@@ -12,14 +12,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import static il.ac.huji.todolist.Constants.FIRST_COLUMN;
-import static il.ac.huji.todolist.Constants.NO_DATE_IDENTIFIER;
-import static il.ac.huji.todolist.Constants.NO_DATE_STR;
 import static il.ac.huji.todolist.Constants.SECOND_COLUMN;
 
 
@@ -61,7 +57,6 @@ public class ToDoListManagerActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
         switch (item.getItemId()) {
             case R.id.menuItemAdd:
                 addTask();
@@ -152,15 +147,7 @@ public class ToDoListManagerActivity extends ActionBarActivity {
                 String taskText = extras.getString(FIRST_COLUMN);
                 Date dueDate = new Date(extras.getLong(SECOND_COLUMN));
 
-                Task task;
-
-                if (dueDate.getTime() == NO_DATE_IDENTIFIER) {
-                    task = new Task (taskText, NO_DATE_STR);
-                } else {
-                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                    task = new Task (taskText, df.format(dueDate));
-                }
-
+                Task task = new Task(taskText, dueDate.getTime());
                 task.setId(db.addTask(task));
 
                 updateUI();
